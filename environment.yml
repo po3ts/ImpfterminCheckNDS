@@ -1,0 +1,8 @@
+name: impftermin-check
+dependencies:
+  - python=3.*
+  - pip
+  - pip:
+      - selenium==3.141.0
+      - boto3==1.17.88
+      - yapf==0.31.0
