@@ -6,3 +6,4 @@ dependencies:
       - selenium==3.141.0
       - boto3==1.17.88
       - yapf==0.31.0
+      - pylint==2.8.3
