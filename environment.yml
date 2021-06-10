@@ -7,3 +7,5 @@ dependencies:
       - boto3==1.17.88
       - yapf==0.31.0
       - pylint==2.8.3
+      - python-telegram-bot==13.6
+      - emoji==1.2.0

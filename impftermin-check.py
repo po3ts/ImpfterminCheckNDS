@@ -74,8 +74,9 @@ while True:
         if "cancel" in vac_center_div.text:
             time.sleep(5)
         else:
-            msg = (f"In dem für Dich zuständigen Impfzentrum (PLZ {ZIP_CODE})"
-                   " sind freie Termine verfügbar!")
+            msg = ("Beeilung, im Impfzentrum Hannover sind gerade freie "
+                   "Termine verfügbar! "
+                   ":rotating_light::syringe::adhesive_bandage:")
             sns.publish(TopicArn=TOPIC_ARN,
                         Message=msg,
                         Subject="Impftermine verfügbar")
