@@ -1,2 +1,10 @@
 # VS Code project settings
 .vscode
+# Python virtual environments
+.venv
+# ZIP archives, e.g. deployment packages
+*.zip
+# .key files, e.g. API tokens
+.key
+# macOS-specific
+.DS_Store

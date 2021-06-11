@@ -2,9 +2,11 @@
 
 CWD=$(pwd)
 cd $(dirname "$0")
-python3 -m pip install -t ./package -r requirements.txt
+python3 -m pip -q install -t ./package -r requirements.txt
+rm -f deployment-pkg.zip
 cd package
-zip -r ../deployment-pkg.zip .
+zip -qr ../deployment-pkg.zip .
 cd ..
-zip -g deployment-pkg.zip bot.py .key
+rm -rf package
+zip -qg deployment-pkg.zip bot.py .key
 cd $CWD

@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import boto3
+from emoji import emojize
 
 BASE_URL = "https://www.impfportal-niedersachsen.de/portal/#/appointment/public"
 
@@ -72,17 +73,17 @@ while True:
             EC.presence_of_element_located((By.XPATH, VAC_CENTER_DIV_XPATH)))
 
         if "cancel" in vac_center_div.text:
-            time.sleep(5)
+            time.sleep(1)
         else:
             msg = ("Beeilung, im Impfzentrum Hannover sind gerade freie "
                    "Termine verfügbar! "
                    ":rotating_light::syringe::adhesive_bandage:")
             sns.publish(TopicArn=TOPIC_ARN,
-                        Message=msg,
+                        Message=emojize(msg, use_aliases=True),
                         Subject="Impftermine verfügbar")
             print(f"{'*'*30}\n* {dt.now()} * {msg}\n{'*'*30}")
             driver.save_screenshot("capture.png")
-            time.sleep(30 * 60)
+            time.sleep(10 * 60)
 
     except Exception:
         traceback.print_exc()
