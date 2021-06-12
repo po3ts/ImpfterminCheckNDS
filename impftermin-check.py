@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import traceback
 from datetime import datetime as dt
@@ -48,6 +49,11 @@ wait = WebDriverWait(driver, 10, poll_frequency=1)
 
 sns = boto3.client("sns")
 
+vaccine = re.compile(r"\bImpfstoff\b:\s(?:\bModerna\b|\bBioNtech\b)", re.I)
+vacc_center = re.compile(r"\bImpfzentrum\b\s\bHannover\b\s\d", re.I)
+
+is_daytime = lambda hour=time.localtime().tm_hour: hour >= 6
+
 while True:
     try:
         driver.get(BASE_URL)
@@ -71,19 +77,20 @@ while True:
             (By.ID, ELEMENT_IDS["zip-code"])))
         vac_center_div = wait.until(
             EC.presence_of_element_located((By.XPATH, VAC_CENTER_DIV_XPATH)))
+        txt = vac_center_div.text
 
-        if "cancel" in vac_center_div.text:
-            time.sleep(1)
-        else:
-            msg = ("Beeilung, im Impfzentrum Hannover sind gerade freie "
-                   "Termine verfügbar! "
+        if match := vaccine.search(txt):
+            msg = (f"Beeilung, im {vacc_center.search(txt).group()} sind "
+                   f"gerade freie Termine verfügbar ({match.group()})! "
                    ":rotating_light::syringe::adhesive_bandage:")
             sns.publish(TopicArn=TOPIC_ARN,
                         Message=emojize(msg, use_aliases=True),
                         Subject="Impftermine verfügbar")
             print(f"{'*'*30}\n* {dt.now()} * {msg}\n{'*'*30}")
             driver.save_screenshot("capture.png")
-            time.sleep(10 * 60)
+            time.sleep(10 * 60 if is_daytime() else 30 * 60)
+        else:
+            time.sleep(1 if is_daytime() else 5)
 
     except Exception:
         traceback.print_exc()
